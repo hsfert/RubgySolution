@@ -214,16 +214,16 @@ pre code {
 <p>The N is chosen by estimating the variance of different parameters. And N = 9 for home and N = 8 for away is chosen.</p>
 <p><span class="math inline">\(\bar{N}_{try} * (1-\bar{N}_{try})/N) &lt; \sigma^{2}(N_{try})\)</span></p>
 <p>Using data from season 2015 to 2019, we fit the parameters as follows.</p>
-<pre><code>##       mean     std parameter team
-## 1: 1.62655 0.03287    N_kick home
-## 2: 2.66136 0.03866     N_try home
-## 3: 0.86945 0.00591    p_conv home
-## 4: 1.58088 0.03185    N_kick away
-## 5: 2.45441 0.03721     N_try away
-## 6: 0.84640 0.00651    p_conv away</code></pre>
+<pre><code>##       mean     std   parameter team
+## 1: 1.62655 0.03287 lambda_kick home
+## 2: 2.66136 0.03866  lambda_try home
+## 3: 0.86945 0.00591      p_conv home
+## 4: 1.58088 0.03185 lambda_kick away
+## 5: 2.45441 0.03721  lambda_try away
+## 6: 0.84640 0.00651      p_conv away</code></pre>
 <p>The variance of parameters is the variance arise from the fact that we fit the model from sampled data set but not from the population. So it does not capture the true variation from different teams playing each other.</p>
 <p>The variance of the total scores arising from the distribution alone is the following.</p>
-<p><span class="math inline">\(\sigma^{2}(N_{score}) = \bar{N}_{trial} * (1- \bar{N}_{trial}/N) * (13*p_{conv}+36) + 9 * \bar{N}_{kick}*(1-\bar{N}_{kick}/N)\)</span></p>
+<p><span class="math inline">\(\sigma^{2}(Score) = \lambda_{trial} * (1- \lambda_{trial}/N) * (13*p_{conv}+36) + 9 * \lambda_{kick}*(1-\lambda_{kick}/N)\)</span></p>
 <p>The estimated variance versus actual variance is the following:</p>
 <pre><code>##    estimated   actual team
 ## 1:  100.6567 101.6427 home
@@ -238,13 +238,13 @@ pre code {
 ## 2: 1.442313  1.334264 N_kick home
 ## 3: 1.935614  1.704672  N_try away
 ## 4: 1.460186  1.270088 N_kick away</code></pre>
-<pre><code>##      estimate    type team
-## 1: 0.12155507 mu_kick home
-## 2: 0.31777537  mu_try home
-## 3: 0.01824837 mu_conv home
-## 4: 0.21725389 mu_kick away
-## 5: 0.26393343  mu_try away
-## 6: 0.01957387 mu_conv away</code></pre>
+<pre><code>##      estimate        type team
+## 1: 0.12155507 lambda_kick home
+## 2: 0.31777537  lambda_try home
+## 3: 0.01824837      p_conv home
+## 4: 0.21725389 lambda_kick away
+## 5: 0.26393343  lambda_try away
+## 6: 0.01957387      p_conv away</code></pre>
 <p>The variation of the parameters should infer the corresponding variation in expected goals. We can estimate the variance of the expected goals by using the closing total score line and closing home line.</p>
 <pre><code>##        mean      std team
 ## 1: 23.73446 3.585810 home
@@ -256,12 +256,12 @@ pre code {
 </div>
 <div id="final-model" class="section level2">
 <h2>Final Model</h2>
-<p>Given that the total score of the request is 25, which is only about half of that in NFL matches, I will try to generate a model based on half of the expectancy in <span class="math inline">\(\mu_{kick}\)</span> and <span class="math inline">\(\mu_{try}\)</span> but <span class="math inline">\(p_{conv}\)</span> remains the same. I also set the points from a try is 5 and points from extra point is 2 points. The kick worth 2 points as well.</p>
+<p>Given that the total score of the request is 25, which is only about half of that in NFL matches, I will try to generate a model based on half of the expectancy in <span class="math inline">\(\lambda_{kick}\)</span> and <span class="math inline">\(\lambda_{try}\)</span> but <span class="math inline">\(p_{conv}\)</span> remains the same. I also set the points from a try is 5 and points from extra point is 2 points. The kick worth 2 points as well.</p>
 <p>If the traders give us a input of the expected goal, we would like to find the most possible parameters based on the input.</p>
 <p>While we can assume the parameters follow independent Gaussian Distribution, and given a input of the expected goal, we can try to sample from the parameter space:</p>
-<p><span class="math inline">\(P(\mu_{kick},\mu_{try},p_{conv}|score) = \frac{P((score-(5+2p_{conv})\mu_{try})/2,\mu_{try},\mu_{conv})}{\int\int P((score-(5+2p_{conv})\mu_{try})/2,\mu_{try},\mu_{conv})d\mu_{try}dp_{conv}}\)</span></p>
+<p><span class="math inline">\(P(\lambda_{kick},\lambda_{try},p_{conv}|score) = \frac{P((score-(5+2p_{conv})\lambda_{try})/2,\lambda_{try},p_{conv})}{\int\int P((score-(5+2p_{conv})\lambda_{try})/2,\lambda_{try},p_{conv})d\lambda_{try}dp_{conv}}\)</span></p>
 <p>It is easier to find parameters that is closest to the means and in the direction of the standard derivations, i.e. finding a scalar c such that:</p>
-<p><span class="math inline">\(Score(\bar{\mu}_{kick}+c\sigma(\mu_{kick}),\bar{\mu}_{try}+c\sigma(\mu_{try}),\mu_{conv}+c\sigma(\mu_{conv}))=score\)</span></p>
+<p><span class="math inline">\(Score(\bar{\lambda}_{kick}+c\sigma(\lambda_{kick}),\bar{\lambda}_{try}+c\sigma(\lambda_{try}),\bar{p}_{conv}+c\sigma(p_{conv}))=score\)</span></p>
 <p>After the parameters are found, we will generate the score grid for each team. Assuming independence in the score grids for home and away team, we will be able to generate the match prices.</p>
 </div>
 <div id="discussion" class="section level2">
