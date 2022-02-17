@@ -1,0 +1,9 @@
+parameter,team,mean,std
+kick,home,0.813275,0.060777535
+try,home,1.33068,0.158887685
+conv,home,0.86945,0.01824837
+kick,away,0.79044,0.108626945
+try,away,1.227205,0.131966715
+conv,away,0.8464,0.01957387
+N,home,9,0
+N,away,8,0
